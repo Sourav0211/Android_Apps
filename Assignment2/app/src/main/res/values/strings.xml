@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Assignment2</string>
+    <string name="reset">Reset</string>
+    <string name="choose_4_cases">Choose 4 Cases</string>
+    <string name="buttonDeal">Deal</string>
+    <string name="buttonNoDeal">No Deal</string>
+</resources>
