@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "969704640254",
+    "project_id": "my-android-app-8aef9",
+    "storage_bucket": "my-android-app-8aef9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:969704640254:android:d1e308591deecce0041faf",
+        "android_client_info": {
+          "package_name": "edu.uncc.assignment09"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPTrd78shm9j6TjQwA0skOrP7s2t4LUZI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:969704640254:android:75bee622400dc5db041faf",
+        "android_client_info": {
+          "package_name": "edu.uncc.gradesapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPTrd78shm9j6TjQwA0skOrP7s2t4LUZI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:969704640254:android:4dfd8a6a086e55a3041faf",
+        "android_client_info": {
+          "package_name": "edu.uncc.hw06"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPTrd78shm9j6TjQwA0skOrP7s2t4LUZI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
