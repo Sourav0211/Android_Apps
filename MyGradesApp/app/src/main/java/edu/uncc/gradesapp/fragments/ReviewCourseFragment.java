@@ -18,9 +18,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -102,8 +104,8 @@ public class ReviewCourseFragment extends Fragment {
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setAdapter(adapter);
 
-        listenerRegistration = db.collection("course")
-                .document(mCourse.getDocId())
+        listenerRegistration = db.collection("courses")
+                .document(mCourse.getCourseId())
                 .collection("review")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
@@ -139,41 +141,19 @@ public class ReviewCourseFragment extends Fragment {
                     Toast.makeText(getActivity(), "Review cannot be empty", Toast.LENGTH_SHORT).show();
                 } else {
 
-                    DocumentReference docRef = db
-                            .collection("course")
-                            .document(mCourse.getDocId())
-                            .collection("review")
-                            .document();
 
-                    HashMap<String , Object> data = new HashMap<>();
-                    data.put("description", reviewText);
-                    data.put("userName", auth.getCurrentUser().getDisplayName());
-                    data.put("createdAt", FieldValue.serverTimestamp());
-                    data.put("userId",auth.getCurrentUser().getUid());
-                    data.put("docId",docRef.getId());
-                    ArrayList<String> likes = new ArrayList<>();
-                    data.put("likes",likes);
-
-
-                    docRef.set(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    db.collection("courses").document(mCourse.getCourseId()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful())
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            if(documentSnapshot.exists())
                             {
-                                binding.editTextReview.setText("");
-//                               adapter.notifyDataSetChanged();
-
-                               HashMap<String, Object> updateData = new HashMap<>();
-                               updateData.put("reviews",mCourse.getReviews()+1);
-                               FirebaseFirestore.getInstance().collection("course").document(mCourse.getDocId())
-                                       .update(updateData);
-
-
+                                createReview(reviewText);
+                            }
+                            else{
+                                createCourse(reviewText);
                             }
                         }
                     });
-
-
 
                 }
             }
@@ -182,6 +162,41 @@ public class ReviewCourseFragment extends Fragment {
 
 
     }
+
+    public void createCourse(String reviewText)
+    {
+        HashMap<String, Object> data = new HashMap<>();
+
+        data.put("courseId", mCourse.getCourseId());
+        data.put("numberOfReviews",0);
+        ArrayList<String> favoriteBy = new ArrayList<>();
+        favoriteBy.add(auth.getCurrentUser().getUid());
+        data.put("favoriteBy",favoriteBy);
+
+        db.collection("courses").document(mCourse.getCourseId()).set(data);
+        createReview(reviewText);
+    }
+
+
+
+    public void createReview(String reviewText)
+    {
+        HashMap<String , Object> data = new HashMap<>();
+        DocumentReference docRef = db.collection("courses").document(mCourse.getCourseId()).collection("review").document();
+        data.put("description",reviewText);
+        data.put("userName",auth.getCurrentUser().getDisplayName());
+        data.put("createdAt", FieldValue.serverTimestamp());
+        data.put("docId",docRef.getId());
+        data.put("userId",auth.getCurrentUser().getUid());
+
+        docRef.set(data);
+        HashMap<String, Object> updateData = new HashMap<>();
+        updateData.put("numberOfReviews",FieldValue.increment(1.0));
+        db.collection("courses").document(mCourse.getCourseId()).update(updateData);
+
+
+    }
+
 
 
 
@@ -250,14 +265,14 @@ public class ReviewCourseFragment extends Fragment {
                 itemBinding.imageViewDelete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        db.collection("course")
-                                .document(mCourse.getDocId())
+                        db.collection("courses")
+                                .document(mCourse.getCourseId())
                                 .collection("review").document(mReview.getDocId()).delete();
 
                         if(mCourse.getHours() !=0) {
                             HashMap<String, Object> updateData = new HashMap<>();
-                            updateData.put("reviews", mCourse.getReviews() - 1);
-                            FirebaseFirestore.getInstance().collection("course").document(mCourse.getDocId()).update(updateData);
+                            updateData.put("numberOfReviews", FieldValue.increment(-1.0));
+                            FirebaseFirestore.getInstance().collection("courses").document(mCourse.getCourseId()).update(updateData);
                         }
                     }
                 });

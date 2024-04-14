@@ -37,6 +37,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import edu.uncc.gradesapp.R;
 import edu.uncc.gradesapp.databinding.CourseReviewRowItemBinding;
@@ -62,7 +63,9 @@ public class CourseReviewsFragment extends Fragment {
     }
 
     FragmentCourseReviewsBinding binding;
-    ArrayList<CourseReview> mCourseReviews = new ArrayList<>();
+//    ArrayList<CourseReview> mCourseReviews = new ArrayList<>();
+
+    HashMap<String , CourseReview> courseReviewsMap = new HashMap<>();
     ArrayList<Course> mCourses = new ArrayList<>();
     ArrayList<Course> dCourses = new ArrayList<>();
     CourseReviewsAdapter adapter;
@@ -86,16 +89,27 @@ public class CourseReviewsFragment extends Fragment {
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setAdapter(adapter);
 
+        getCourses();
 
-
-        listenerRegistration = db.collection("course").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        listenerRegistration = db.collection("courses").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-
+                courseReviewsMap.clear();
+                if(error!=null)
+                {
+                    error.printStackTrace();
+                }
+                else{
+                    for (QueryDocumentSnapshot doc: value) {
+                        CourseReview courseReview = doc.toObject(CourseReview.class);
+                        courseReviewsMap.put(courseReview.getCourseId(),courseReview);
+                    }
+                }
+                adapter.notifyDataSetChanged();
             }
         });
 
-        getCourses();
+
 
     }
 
@@ -128,9 +142,7 @@ public class CourseReviewsFragment extends Fragment {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-
-                                setCourses();
-//                                adapter.notifyDataSetChanged();
+                                adapter.notifyDataSetChanged();
                             }
                         });
                     } catch (JSONException e) {
@@ -149,91 +161,6 @@ public class CourseReviewsFragment extends Fragment {
 
     }
 
-    private void setCourses()
-    {
-
-        db.collection("course").limit(1).get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful())
-                        {
-                            if(task.getResult().isEmpty())
-                            {
-
-                                for(Course course : mCourses) {
-                                    DocumentReference docRef = db.collection("course").document();
-                                    HashMap<String, Object> data = new HashMap<>();
-
-
-                                    data.put("name", course.getName());
-                                    data.put("number", course.getNumber());
-                                    data.put("hours", course.getHours());
-                                    data.put("courseId", course.getCourseId());
-                                    data.put("reviews",0);
-                                    data.put("docId",docRef.getId());
-                                    ArrayList<String> likes = new ArrayList<>();
-                                    data.put("likes",likes);
-
-                                    docRef.set(data).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if(task.isSuccessful())
-                                            {
-                                                displayCourses();
-                                            }
-                                        }
-                                    });
-
-
-
-                                }
-                            }
-                            else{
-                                displayCourses();
-                            }
-
-                        }
-                        else{
-                            Log.e("Firestore", "Error getting documents: ", task.getException());
-                        }
-
-                    }
-                });
-
-    }
-
-
-    public void  displayCourses()
-    {
-        listenerRegistration = db.collection("course").addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if(error != null)
-                {
-                    error.printStackTrace();
-                    return;
-                }
-                else{
-                    dCourses.clear();
-                    for(QueryDocumentSnapshot doc : value)
-                    {
-                        Course course = doc.toObject(Course.class);
-                        dCourses.add(course);
-
-                    }
-                    adapter.notifyDataSetChanged();
-                }
-
-            }
-        });
-
-    }
-
-
-
-
-
 
     @Override
     public void onDestroyView() {
@@ -242,6 +169,7 @@ public class CourseReviewsFragment extends Fragment {
         {
             listenerRegistration.remove();
             listenerRegistration = null;
+            courseReviewsMap.clear();
 
         }
     }
@@ -257,12 +185,12 @@ public class CourseReviewsFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull CourseReviewsViewHolder holder, int position) {
-            holder.setupUI(dCourses.get(position));
+            holder.setupUI(mCourses.get(position));
         }
 
         @Override
         public int getItemCount() {
-            return dCourses.size();
+            return mCourses.size();
         }
 
         class CourseReviewsViewHolder extends RecyclerView.ViewHolder {
@@ -274,51 +202,59 @@ public class CourseReviewsFragment extends Fragment {
 
             }
 
-            public void setupUI(Course course){
+            public void setupUI(Course course) {
                 this.mCourse = course;
-                itemBinding.textViewCourseName.setText(course.getName());
-                itemBinding.textViewCreditHours.setText(course.getHours() + " Credit Hours");
-                itemBinding.textViewCourseNumber.setText(course.getNumber());
-                itemBinding.textViewCourseReviews.setText(Integer.toString(course.getReviews()));
-
-                if(mCourse.getLikes()!= null)
-                {
+                itemBinding.textViewCourseName.setText(mCourse.getName());
+                itemBinding.textViewCreditHours.setText(mCourse.getHours() + " Credit Hours");
+                itemBinding.textViewCourseNumber.setText(mCourse.getNumber());
 
 
-                if(mCourse.getLikes().contains(auth.getCurrentUser().getUid()))
-                {
-                    itemBinding.imageViewHeart.setImageResource(R.drawable.ic_heart_full);
-                }
-                else{
+                CourseReview courseReview = courseReviewsMap.get(mCourse.courseId);
+
+
+
+
+                if (courseReview == null) {
                     itemBinding.imageViewHeart.setImageResource(R.drawable.ic_heart_empty);
-                }
-                }
-                else{
-                    itemBinding.imageViewHeart.setImageResource(R.drawable.ic_heart_empty);
-                }
+                    itemBinding.textViewCourseReviews.setText("0");
+                }else {
+                    if(courseReview.getFavoriteBy().contains(auth.getCurrentUser().getUid()))
+                    {
+                        itemBinding.imageViewHeart.setImageResource(R.drawable.ic_heart_full);
+                    }else{
+                        itemBinding.imageViewHeart.setImageResource(R.drawable.ic_heart_empty);
+                    }
+                    itemBinding.textViewCourseReviews.setText(Integer.toString(courseReview.getNumberOfReviews()));
 
+                }
 
 
                 itemBinding.imageViewHeart.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(mCourse.getLikes() != null) {
-                            if (mCourse.getLikes().contains(auth.getCurrentUser().getUid())) {
-                                HashMap<String, Object> updateData = new HashMap<>();
-                                updateData.put("likes", FieldValue.arrayRemove(auth.getCurrentUser().getUid()));
-                                FirebaseFirestore.getInstance().collection("course").document(mCourse.getDocId()).update(updateData);
 
-                            } else {
-                                HashMap<String, Object> updateData = new HashMap<>();
-                                updateData.put("likes", FieldValue.arrayUnion(auth.getCurrentUser().getUid()));
-                                FirebaseFirestore.getInstance().collection("course").document(mCourse.getDocId()).update(updateData);
+                        HashMap<String,Object > data = new HashMap<>();
+                        CourseReview courseReview = courseReviewsMap.get(mCourse.getCourseId());
+                        if(courseReview == null)
+                        {
+                            data.put("courseId", mCourse.getCourseId());
+                            data.put("numberOfReviewa",0);
+                            ArrayList<String> favoriteBy = new ArrayList<>();
+                            favoriteBy.add(auth.getCurrentUser().getUid());
+                            data.put("favoriteBy",favoriteBy);
+                            db.collection("courses").document(mCourse.getCourseId()).set(data);
 
+                        }else {
+                            if(courseReview.getFavoriteBy().contains(auth.getCurrentUser().getUid()))
+                            {
+
+                            data.put("favoriteBy",FieldValue.arrayRemove(auth.getCurrentUser().getUid()));
+                            db.collection("courses").document(mCourse.getCourseId()).update(data);
+
+                            }else {
+                                data.put("favoriteBy",FieldValue.arrayUnion(auth.getCurrentUser().getUid()));
+                                db.collection("courses").document(mCourse.getCourseId()).update(data);
                             }
-                        }
-                        else{
-                            HashMap<String, Object> updateData = new HashMap<>();
-                            updateData.put("likes", FieldValue.arrayRemove(auth.getCurrentUser().getUid()));
-                            FirebaseFirestore.getInstance().collection("course").document(mCourse.getDocId()).update(updateData);
                         }
 
                     }

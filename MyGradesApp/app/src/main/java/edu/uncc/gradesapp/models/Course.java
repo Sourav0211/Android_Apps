@@ -12,24 +12,7 @@ public class Course implements Serializable {
     public String userId;
     public String number;
     public double hours;
-    int reviews = 0;
-    ArrayList<String> likes = new ArrayList<>();
 
-    public int getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(int review) {
-        this.reviews = review;
-    }
-
-    public ArrayList<String> getLikes() {
-        return likes;
-    }
-
-    public void setLikes(ArrayList<String> likes) {
-        this.likes = likes;
-    }
 
     public String getDocId() {
         return docId;

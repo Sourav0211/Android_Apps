@@ -14,15 +14,8 @@ public class Review implements Serializable {
     public String docId;
     public String userId;
 
-    ArrayList<String> likes = new ArrayList<>();
 
-    public ArrayList<String> getLikes() {
-        return likes;
-    }
 
-    public void setLikes(ArrayList<String> likes) {
-        this.likes = likes;
-    }
 
     public Review(String description, String userName, Timestamp createdAt, String docId, String userId) {
         this.description = description;

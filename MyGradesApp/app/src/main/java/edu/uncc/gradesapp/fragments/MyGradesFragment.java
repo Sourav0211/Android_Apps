@@ -152,6 +152,8 @@ public class MyGradesFragment extends Fragment {
         {
             listenerRegistration.remove();
             listenerRegistration = null;
+            grades.clear();
+
         }
 
     }
