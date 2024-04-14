@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "159248034287",
+    "project_id": "e-messages-app",
+    "storage_bucket": "e-messages-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:159248034287:android:ab74ee1cad1247974aae1a",
+        "android_client_info": {
+          "package_name": "com.example.assignment11"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSzCG3ctnPvZ6u6rEvA1q5KPwEOHmxXrE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
