@@ -202,26 +202,26 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastViewH
         return forecasts.size();
     }
 
-    class ForecastViewHolder extends RecyclerView.ViewHolder{
-        ForecastListItemBinding mBinding;
-        public ForecastViewHolder(ForecastListItemBinding vhBinding) {
-            super(vhBinding.getRoot());
-            mBinding = vhBinding;
+                class ForecastViewHolder extends RecyclerView.ViewHolder{
+                    ForecastListItemBinding mBinding;
+                    public ForecastViewHolder(ForecastListItemBinding vhBinding) {
+                        super(vhBinding.getRoot());
+                        mBinding = vhBinding;
 
-        }
+                    }
 
-        public void setUpUI(Forecast forecast)
-        {
-            mBinding.textViewTemperature.setText(forecast.getTemperature());
-            mBinding.textViewDateTime.setText(forecast.getStartTime());
-            mBinding.textViewForecast.setText(forecast.getShortforcast());
-            mBinding.textViewHumidity.setText(forecast.getHumidy());
-            mBinding.textViewWindSpeed.setText((forecast.getWindspeed()));
-            Picasso.get().load(forecast.getIcon()).into(mBinding.imageView);
-        }
+                    public void setUpUI(Forecast forecast)
+                    {
+                        mBinding.textViewTemperature.setText(forecast.getTemperature());
+                        mBinding.textViewDateTime.setText(forecast.getStartTime());
+                        mBinding.textViewForecast.setText(forecast.getShortforcast());
+                        mBinding.textViewHumidity.setText(forecast.getHumidy());
+                        mBinding.textViewWindSpeed.setText((forecast.getWindspeed()));
+                        Picasso.get().load(forecast.getIcon()).into(mBinding.imageView);
+                    }
 
 
-    }
+                }
 }
 
 }

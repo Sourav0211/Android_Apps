@@ -10,7 +10,7 @@ import android.widget.RadioGroup;
 public class SelectEducationActivity extends AppCompatActivity {
     String education;
     RadioGroup RadioGroupEducation;
-    public static final String KEY_EDU = "EDULEVEL";
+    public static final String KEY_EDU = "EDU_LEVEL";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

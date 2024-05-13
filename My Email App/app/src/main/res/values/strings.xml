@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Assignment11</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="password_label">Password</string>
+    <string name="email_label">Email</string>
+    <string name="login_label">Login</string>
+    <string name="create_account_label">create new account</string>
+    <string name="name_label">Full name</string>
+    <string name="submit_label">Submit</string>
+    <string name="cancel_label">Cancel</string>
+    <string name="Logout">Log Out</string>
+    <string name="CreateNewMessage">Create New Message</string>
+    <string name="Reply">Send Reply</string>
+    <string name="Button_Reply">Reply</string>
+    <string name="CancelViewReply">Cancel</string>
+    <string name="DeleteMessage">Delete</string>
+    <string name="ListOFUsers">Users</string>
+    <string name="BlokcedUserList">Blocked User</string>
+    <string name="BlockUserButton">Block</string>
+</resources>

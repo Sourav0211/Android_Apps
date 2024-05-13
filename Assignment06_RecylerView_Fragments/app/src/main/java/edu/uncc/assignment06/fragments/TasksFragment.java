@@ -125,21 +125,16 @@ public class TasksFragment extends Fragment {
         public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             TaskListItemBinding binding = TaskListItemBinding.inflate(getLayoutInflater(),parent,false);
             return new TaskViewHolder(binding);
-
-
         }
-
         @Override
         public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
             Task task = mTasks.get(position);
             holder.setupUI(task);
         }
-
         @Override
         public int getItemCount() {
             return mTasks.size();
         }
-
         class TaskViewHolder extends RecyclerView.ViewHolder{
             TaskListItemBinding mbinding;
             Task mTask;
@@ -147,7 +142,6 @@ public class TasksFragment extends Fragment {
                 super(binding.getRoot());
                 mbinding = binding;
             }
-
             public void setupUI(Task task)
             {
                 mbinding.textViewName.setText(task.getName());
@@ -174,6 +168,9 @@ public class TasksFragment extends Fragment {
 
         }
     }
+
+
+
 
 
 

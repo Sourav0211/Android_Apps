@@ -10,6 +10,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DecimalFormat;
+
 
 public class MainActivity extends AppCompatActivity {
     SeekBar seekBar;
@@ -30,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
         radioGroupPercent = findViewById(R.id.radioGroupPercent);
         seekBar = findViewById(R.id.seekBar);
         textViewProgress = findViewById(R.id.textViewProgress);
+
+
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -60,52 +64,58 @@ public class MainActivity extends AppCompatActivity {
                 userInput = editTextItemPrice.getText().toString();
                if(userInput.isEmpty())
                 {
-                    textViewDiscount.setText("");
-                    textViewFinaPrice.setText("");
+                    discount = 0.0;
+                    textViewDiscount.setText("0.0");
+                    textViewFinaPrice.setText("0.0");
                     Toast.makeText(MainActivity.this,"Enter Item Price",Toast.LENGTH_SHORT).show();
                 }
                 else if(Integer.parseInt(userInput)< 0){
                    Toast.makeText(MainActivity.this,"Enter Positive Value",Toast.LENGTH_SHORT).show();
                 } else
                 {
-                    price = Integer.parseInt(userInput);
+                    if(!userInput.isEmpty())
+                        price = Integer.parseInt(userInput);
+
+
+                    int checkedId= radioGroupPercent.getCheckedRadioButtonId();
+
+                    if(checkedId == R.id.radioButton10)
+                    {
+                        discount = price * 0.10;
+                        price = price - discount;
+                        textViewDiscount.setText(String.valueOf(discount));
+                        textViewFinaPrice.setText(String.valueOf(price));
+
+                    }
+                    else if(checkedId == R.id.radioButton15)
+                    {
+                        discount = price * 0.15;
+                        price = price - discount;
+                        DecimalFormat df = new DecimalFormat("#.##");
+                        textViewDiscount.setText(df.format(discount));
+                        textViewFinaPrice.setText(String.valueOf(price));
+                    }
+                    else if(checkedId == R.id.radioButton18)
+                    {
+                        discount = price * 0.18;
+                        price = price - discount;
+                        textViewDiscount.setText(String.valueOf(discount));
+                        textViewFinaPrice.setText(String.valueOf(price));
+                    }
+                    else if(checkedId == R.id.radioButtonC)
+                    {
+                        discount = price * (percent/100.0);
+                        price = price - discount;
+                        textViewDiscount.setText(String.valueOf(discount));
+                        textViewFinaPrice.setText(String.valueOf(price));
+
+
+                    }
+                }
                 }
 
 
-                int checkedId= radioGroupPercent.getCheckedRadioButtonId();
 
-                if(checkedId == R.id.radioButton10)
-                {
-                    discount = price * 0.10;
-                    price = price - discount;
-                    textViewDiscount.setText(String.valueOf(discount));
-                    textViewFinaPrice.setText(String.valueOf(price));
-
-                }
-                else if(checkedId == R.id.radioButton15)
-                {
-                    discount = price * 0.15;
-                    price = price - discount;
-                    textViewDiscount.setText(String.valueOf(discount));
-                    textViewFinaPrice.setText(String.valueOf(price));
-                }
-                else if(checkedId == R.id.radioButton18)
-                {
-                    discount = price * 0.18;
-                    price = price - discount;
-                    textViewDiscount.setText(String.valueOf(discount));
-                    textViewFinaPrice.setText(String.valueOf(price));
-                }
-                else if(checkedId == R.id.radioButtonC)
-                {
-                    discount = price * (percent/100.0);
-                    price = price - discount;
-                    textViewDiscount.setText(String.valueOf(discount));
-                    textViewFinaPrice.setText(String.valueOf(price));
-
-
-                }
-            }
         });
 
 

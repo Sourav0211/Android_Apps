@@ -35,6 +35,7 @@ public class MainFragment extends Fragment {
 
         binding = FragmentMainBinding.inflate(inflater,container,false);
         return binding.getRoot();
+
     }
 
     @Override
